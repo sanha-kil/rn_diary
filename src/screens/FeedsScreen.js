@@ -1,18 +1,15 @@
 import React from 'react';
 import {observer} from 'mobx-react-lite';
-import {View, StyleSheet, Text, TextInput} from 'react-native';
-import {feedState, setMessage} from '../stores/FeedStore';
+import {View, StyleSheet} from 'react-native';
+import FloatingWriteButton from '../components/FloatingWriteButton';
+import {feedState} from '../stores/FeedStore';
+import FeedList from '../components/FeedList';
 
 const FeedsScreen = observer(() => {
-  console.log(feedState.message);
   return (
     <View style={styles.block}>
-      <Text>{feedState.message}</Text>
-      <TextInput
-        value={feedState.message}
-        onChangeText={e => setMessage(feedState, e)}
-        style={styles.input}
-      />
+      <FeedList logs={feedState.feeds} />
+      <FloatingWriteButton />
     </View>
   );
 });
@@ -20,9 +17,7 @@ const FeedsScreen = observer(() => {
 export default FeedsScreen;
 
 const styles = StyleSheet.create({
-  block: {},
-  input: {
-    padding: 16,
-    backgroundColor: 'white',
+  block: {
+    flex: 1,
   },
 });
