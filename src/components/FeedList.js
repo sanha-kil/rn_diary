@@ -1,15 +1,32 @@
 import {FlatList, StyleSheet, Text, View} from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import FeedListItem from './FeedListItem';
 
-const FeedList = ({logs}) => {
+const FeedList = ({feeds, onScrollToBottom}) => {
+  const onScroll = e => {
+    if (!onScrollToBottom) {
+      return;
+    }
+
+    const {contentSize, layoutMeasurement, contentOffset} = e.nativeEvent;
+    const measured =
+      contentSize.height - layoutMeasurement.height - contentOffset.y;
+
+    if (measured < 72) {
+      onScrollToBottom(true);
+    } else {
+      onScrollToBottom(false);
+    }
+  };
+
   return (
     <FlatList
-      data={logs}
+      data={feeds}
       style={styles.block}
-      renderItem={({item}) => <FeedListItem log={item} />}
+      renderItem={({item}) => <FeedListItem feed={item} />}
       keyExtractor={log => log.id}
       ItemSeparatorComponent={() => <View style={styles.separator} />}
+      onScroll={onScroll}
     />
   );
 };

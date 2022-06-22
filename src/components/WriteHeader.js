@@ -3,7 +3,7 @@ import React from 'react';
 import {useNavigation} from '@react-navigation/native';
 import TransparentCircleButton from './TransparentCircleButton';
 
-const WriteHeader = ({onSave}) => {
+const WriteHeader = ({onSave, askWhetherToDelete, isEditing}) => {
   const navigation = useNavigation();
 
   const onGoBack = () => {
@@ -21,11 +21,14 @@ const WriteHeader = ({onSave}) => {
       </View>
       <View style={styles.buttons}>
         <View style={[styles.iconButtonWrapper, styles.marginRight]}>
-          <TransparentCircleButton
-            name="delete-forever"
-            color="#ef5350"
-            hasMarginRight
-          />
+          {isEditing && (
+            <TransparentCircleButton
+              name="delete-forever"
+              color="#ef5350"
+              hasMarginRight
+              onPress={askWhetherToDelete}
+            />
+          )}
         </View>
         <View style={styles.iconButtonWrapper}>
           <TransparentCircleButton

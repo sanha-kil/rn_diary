@@ -2,9 +2,17 @@ import React from 'react';
 import moment from 'moment';
 
 import {Platform, Pressable, StyleSheet, Text} from 'react-native';
-const FeedListItem = ({log}) => {
-  const {title, body, date} = log;
+import {useNavigation} from '@react-navigation/native';
+const FeedListItem = ({feed}) => {
+  const {title, body, date} = feed;
   const adjustedDate = moment(date).format('YYYY년 MM월 DD일 HH:mm');
+  const navigation = useNavigation();
+
+  const onPress = () => {
+    navigation.navigate('Write', {
+      feed,
+    });
+  };
 
   return (
     <Pressable
@@ -12,7 +20,8 @@ const FeedListItem = ({log}) => {
         styles.block,
         Platform.OS === 'ios' && pressed && {backgroundColor: '#efefef'},
       ]}
-      android_ripple={{color: '#ededed'}}>
+      android_ripple={{color: '#ededed'}}
+      onPress={onPress}>
       <Text style={styles.date}>{adjustedDate}</Text>
       <Text style={styles.title}>{title}</Text>
       <Text style={styles.body}>{body}</Text>
