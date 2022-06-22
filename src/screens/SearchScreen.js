@@ -2,12 +2,12 @@ import React from 'react';
 import {observer} from 'mobx-react-lite';
 import {View, StyleSheet} from 'react-native';
 import {searchState} from '../stores/SearchStore';
-import {filterFeeds} from '../stores/FeedStore';
+import {searchFeeds} from '../stores/FeedStore';
 import FeedList from '../components/FeedList';
 import EmptySearchResult from '../components/EmptySearchResult';
 
 const SearchScreen = observer(() => {
-  const searchedTarget = filterFeeds(searchState.keyword);
+  const searchedTarget = searchFeeds(searchState.keyword);
 
   return (
     <View style={styles.block}>

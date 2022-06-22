@@ -1,83 +1,35 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useState} from 'react';
 import {observer} from 'mobx-react-lite';
-import {View, StyleSheet, Animated, Button} from 'react-native';
-
-const FadeInAndOut = () => {
-  const animation = useRef(new Animated.Value(1)).current;
-
-  return (
-    <View>
-      <Animated.View style={[styles.rectangle, {opacity: animation}]} />
-      <Button
-        title="FadeIn"
-        onPress={() => {
-          Animated.timing(animation, {
-            toValue: 1,
-            useNativeDriver: true,
-          }).start();
-        }}
-      />
-      <Button
-        title="FadeOut"
-        onPress={() => {
-          Animated.timing(animation, {
-            toValue: 0,
-            useNativeDriver: true,
-          }).start();
-        }}
-      />
-    </View>
-  );
-};
-
-const SlideLeftAndRight = () => {
-  const animation = useRef(new Animated.Value(0)).current;
-  const [enabled, setEnabled] = useState(false);
-
-  useEffect(() => {
-    Animated.timing(animation, {
-      toValue: enabled ? 1 : 0,
-      useNativeDriver: true,
-    }).start();
-  }, [enabled, animation]);
-
-  return (
-    <View>
-      <Animated.View
-        style={[
-          styles.rectangle,
-          {
-            transform: [
-              {
-                translateX: animation.interpolate({
-                  inputRange: [0, 1],
-                  outputRange: [0, 150],
-                }),
-              },
-            ],
-            opacity: animation.interpolate({
-              inputRange: [0, 1],
-              outputRange: [1, 0],
-            }),
-          },
-        ]}
-      />
-      <Button
-        title="Toggle"
-        onPress={() => {
-          setEnabled(prev => !prev);
-        }}
-      />
-    </View>
-  );
-};
+import {StyleSheet} from 'react-native';
+import CalendarView from '../components/CalendarView';
+import {feedState, filteredFeedByDate} from '../stores/FeedStore';
+import moment from 'moment';
+import FeedList from '../components/FeedList';
 
 const CalendarScreen = observer(() => {
+  const feeds = feedState.feeds;
+  const [selectedDate, setSelectedDate] = useState(
+    moment().format('YYYY-MM-DD'),
+  );
+
+  const markedDates = feeds.reduce((acc, current) => {
+    const formattedDate = moment(current.date).format('YYYY-MM-DD');
+    acc[formattedDate] = {marked: true};
+
+    return acc;
+  }, {});
+
   return (
-    <View style={styles.block}>
-      <FadeInAndOut />
-      <SlideLeftAndRight />
-    </View>
+    <FeedList
+      feeds={filteredFeedByDate(selectedDate)}
+      ListHeaderComponent={
+        <CalendarView
+          markedDates={markedDates}
+          selectedDate={selectedDate}
+          onSelectDate={setSelectedDate}
+        />
+      }
+    />
   );
 });
 

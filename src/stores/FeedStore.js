@@ -1,4 +1,5 @@
 import {observable, action} from 'mobx';
+import moment from 'moment';
 import {v4 as uuidv4} from 'uuid';
 
 export const feedState = observable({
@@ -32,9 +33,17 @@ export const deleteFeed = action(target => {
   feedState.feeds = adjustedFeeds;
 });
 
-export const filterFeeds = keyword => {
+export const searchFeeds = keyword => {
   const filteredFeeds = feedState.feeds.filter(feed =>
     [feed.title, feed.body].some(text => text.includes(keyword)),
+  );
+
+  return filteredFeeds;
+};
+
+export const filteredFeedByDate = date => {
+  const filteredFeeds = feedState.feeds.filter(
+    feed => moment(feed.date).format('YYYY-MM-DD') === date,
   );
 
   return filteredFeeds;
