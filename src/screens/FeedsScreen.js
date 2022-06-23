@@ -1,12 +1,18 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {observer} from 'mobx-react-lite';
 import {View, StyleSheet} from 'react-native';
 import FloatingWriteButton from '../components/FloatingWriteButton';
-import {feedState} from '../stores/FeedStore';
+import {feedState, getFeedsFromLocal} from '../stores/FeedStore';
 import FeedList from '../components/FeedList';
 
 const FeedsScreen = observer(() => {
   const [isHidden, setIsHidden] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      await getFeedsFromLocal();
+    })();
+  }, []);
 
   const onScrollToBottom = isBottom => {
     if (isHidden !== isBottom) {

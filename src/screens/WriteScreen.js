@@ -16,13 +16,14 @@ const WriteScreen = observer(({route}) => {
   const feed = route.params?.feed;
   const [title, setTitle] = useState(feed?.title ?? '');
   const [body, setBody] = useState(feed?.body || '');
+  const [date, setDate] = useState(feed ? new Date(feed.date) : new Date());
   const navigation = useNavigation();
 
   const onSave = () => {
     if (feed) {
       modifyFeed({
-        id: feed.id,
-        date: feed.date,
+        id: feed?.id,
+        date: feed?.date,
         title,
         body,
       });
@@ -62,6 +63,8 @@ const WriteScreen = observer(({route}) => {
           onSave={onSave}
           askWhetherToDelete={askWhetherToDelete}
           isEditing={!!feed}
+          date={date}
+          onChangeDate={setDate}
         />
         <WriteEditor
           title={title}

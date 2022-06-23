@@ -1,14 +1,10 @@
-import {observable, action} from 'mobx';
+import {observable, action, autorun, runInAction} from 'mobx';
 import moment from 'moment';
 import {v4 as uuidv4} from 'uuid';
+import feedsStorage from '../storages/feedsStorage';
 
 export const feedState = observable({
-  feeds: Array.from({length: 10}).map((_, index) => ({
-    id: uuidv4(),
-    title: String(index),
-    body: String(index),
-    date: new Date().toISOString(),
-  })),
+  feeds: [],
 });
 
 export const createFeed = action((title, body, date) => {
@@ -48,3 +44,20 @@ export const filteredFeedByDate = date => {
 
   return filteredFeeds;
 };
+
+export const getFeedsFromLocal = action(async () => {
+  const localFeeds = await feedsStorage.get();
+  runInAction(() => {
+    console.log(localFeeds);
+    feedState.feeds = localFeeds;
+  });
+});
+
+// const setFeedsToLocal = () => {
+//   feed
+// };
+
+autorun(async () => {
+  // console.log(1);
+  await feedsStorage.set(feedState.feeds);
+});
